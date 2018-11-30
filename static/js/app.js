@@ -27,6 +27,15 @@ function createTable() {
 
 };
 createTable();
+
+// disabled since data was not clean
+// var slider = d3.select("#durationSlider");
+// var output = d3.select("#durationRange");
+// output.innerHTML = slider.value; 
+
+// slider.oninput = function() {
+//     output.innerHTML = this.value;
+// }
 var filterButton = d3.select('#filter-btn');
 var inputElement = d3.select("#filter");
 
@@ -35,29 +44,30 @@ var inputElement = d3.select("#filter");
 filterButton.on("click", function() {
 
   d3.event.preventDefault();
+  // clearing exisiting table
   document.getElementById("tbody").innerHTML = "";
 
-  var datetime = d3.select('#datetime').node().value;
-  var city = d3.select('#city').node().value;
-  var state = d3.select('#state').node().value;
-  var country = d3.select('#country').node().value;
-  var shape = d3.select('#shape').node().value;
-  var filters = {'datetime': datetime, 'city': city, 'state': state, 'country': country, 'shape': shape};
+  //colecting filters  
+  var datetimeVal = d3.select('#datetime').node().value;
+  var cityVal = d3.select('#city').node().value;
+  var stateVal = d3.select('#state').node().value;
+  var countryVal = d3.select('#country').node().value;
+  var shapeVal = d3.select('#shape').node().value;
+
+  var filters = {'datetime': datetimeVal, 'city': cityVal, 'state': stateVal, 'country': countryVal, 'shape': shapeVal};
 
   var filteredData = ufoReports;
-  filteredData = filteredData.filter(ufoReport => ufoReport.datetime === datetime);
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value != ""){
+    
+      filteredData = filteredData.filter(ufoReport => ufoReport[key]  === value );
+
+    }
+  });
 
 
-  // Object.entries(filters).forEach(([key, value]) => {
-  //   if (value != ""){
-  //     console.log(key, value);
-  //     filteredData = filteredData.filter(ufoReport => ufoReport.key == value);
-     
-  //   }
-  // });
-
-
-
+  //creating filter table
   filteredData.forEach((ufoReport) => {
     var row = tbody.append("tr")
     Object.entries(ufoReport).forEach(([key, value]) => {
